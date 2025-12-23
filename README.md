@@ -1,3 +1,26 @@
+## mujoco_vendor (kilted) - 0.0.6-1
+
+The packages in the `mujoco_vendor` repository were released into the `kilted` distro by running `/home/user/.venv/bin/bloom-release --rosdistro kilted --track kilted mujoco_vendor -y` on `Tue, 23 Dec 2025 20:43:01 -0000`
+
+The `mujoco_vendor` package was released.
+
+Version of package(s) in repository `mujoco_vendor`:
+
+- upstream repository: https://github.com/pal-robotics/mujoco_vendor.git
+- release repository: https://github.com/ros2-gbp/mujoco_vendor-release.git
+- rosdistro version: `0.0.5-1`
+- old version: `0.0.5-1`
+- new version: `0.0.6-1`
+
+Versions of tools used:
+
+- bloom version: `0.13.0`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## mujoco_vendor (rolling) - 0.0.6-1
 
 The packages in the `mujoco_vendor` repository were released into the `rolling` distro by running `/home/user/.venv/bin/bloom-release --rosdistro rolling --track rolling mujoco_vendor -y` on `Tue, 23 Dec 2025 20:39:32 -0000`
