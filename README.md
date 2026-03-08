@@ -1,3 +1,26 @@
+## mujoco_vendor (rolling) - 0.0.8-1
+
+The packages in the `mujoco_vendor` repository were released into the `rolling` distro by running `/usr/local/bin/bloom-release --rosdistro rolling --track rolling mujoco_vendor -y` on `Sun, 08 Mar 2026 00:42:57 -0000`
+
+The `mujoco_vendor` package was released.
+
+Version of package(s) in repository `mujoco_vendor`:
+
+- upstream repository: https://github.com/pal-robotics/mujoco_vendor.git
+- release repository: https://github.com/ros2-gbp/mujoco_vendor-release.git
+- rosdistro version: `0.0.7-1`
+- old version: `0.0.7-1`
+- new version: `0.0.8-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## mujoco_vendor (humble) - 0.0.7-1
 
 The packages in the `mujoco_vendor` repository were released into the `humble` distro by running `/usr/local/bin/bloom-release --rosdistro humble --track humble mujoco_vendor -y` on `Mon, 02 Mar 2026 09:37:40 -0000`
