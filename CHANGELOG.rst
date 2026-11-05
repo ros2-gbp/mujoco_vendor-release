@@ -2,6 +2,19 @@
 Changelog for package mujoco_vendor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.2 (2026-11-05)
+------------------
+* Rename mujoco and lodepng targets to match conda + a placeholder (`#17 <https://github.com/pal-robotics/mujoco_vendor/issues/17>`_)
+* Contributors: Erik Holum
+
+0.1.1 (2026-08-27)
+------------------
+* Merge branch 'fix/build_warnings' into 'master'
+  Fix build warnings
+  See merge request third-party/mujoco_vendor!8
+* Fix build warnings
+* Contributors: Sai Kishor Kothakota
+
 0.1.0 (2026-08-26)
 ------------------
 * Remove Sergi from the maintainers
