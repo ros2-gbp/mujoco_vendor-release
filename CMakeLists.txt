@@ -7,9 +7,20 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+
+# Handle the case in which mujoco should not vendored, for example in conda-forge/robostack where a recent enough
+# mujoco package is available in the distribution, and there is no need to vendor it
+# We use the AMENT_VENDOR_POLICY option proposed in https://github.com/ament/ament_cmake/pull/592 and that will
+# be introduced at some point in ament_vendor for this purpouse
+if(DEFINED AMENT_VENDOR_POLICY AND (AMENT_VENDOR_POLICY STREQUAL "NEVER_VENDOR" OR AMENT_VENDOR_POLICY STREQUAL "NEVER_VENDOR_IGNORE_SATISFIED_CHECK"))
+  ament_export_dependencies(mujoco)
+  ament_package()
+  return()
+endif()
+
 include(FetchContent)
 
-set(MUJOCO_VERSION "3.4.0")
+set(MUJOCO_VERSION "3.12.0")
 set(MUJOCO_DOWNLOAD_URL "https://github.com/google-deepmind/mujoco/releases/download/${MUJOCO_VERSION}")
 
 # Detect system and architecture for appropriate asset selection
@@ -66,17 +77,17 @@ install(DIRECTORY ${MUJOCO_ROOT_DIR}/
 # The MuJoCo plugins ship with a hardcoded build-time RPATH
 # (/tmpfs/src/git/mujoco_internal/build/lib) that does not exist on target
 # machines. Rewrite it to a $ORIGIN-relative path so that:
-#   1. dpkg-shlibdeps can locate libmujoco.so.3.4.0 when analysing the plugins
+#   1. dpkg-shlibdeps can locate libmujoco.so.3.12.0 when analysing the plugins
 #      in the Debian staging area (it expands $ORIGIN to the directory of the
 #      file under analysis, landing in opt/mujoco_vendor/lib/ where
-#      libmujoco.so.3.4.0 is installed by this same package), and
+#      libmujoco.so.3.12.0 is installed by this same package), and
 #   2. plugins can find libmujoco.so at runtime without relying solely on
 #      LD_LIBRARY_PATH.
 find_program(PATCHELF_EXECUTABLE patchelf)
 if(NOT PATCHELF_EXECUTABLE)
   message(WARNING
     "patchelf not found. MuJoCo plugin RPATHs will not be fixed; "
-    "Debian packaging will fail with 'cannot find libmujoco.so.3.4.0'.")
+    "Debian packaging will fail with 'cannot find libmujoco.so.3.12.0'.")
 else()
   install(CODE "
     file(GLOB _mujoco_plugins
@@ -130,6 +141,52 @@ install(TARGETS mujoco
   LIBRARY DESTINATION opt/${PROJECT_NAME}/lib
   ARCHIVE DESTINATION opt/${PROJECT_NAME}/lib
   RUNTIME DESTINATION opt/${PROJECT_NAME}/bin
+)
+
+# Pinned lodepng version from:
+# https://github.com/google-deepmind/mujoco/blob/3.4.0/simulate/CMakeLists.txt#L26
+set(MUJOCO_DEP_VERSION_lodepng "b4ed2cd7ecf61d29076169b49199371456d4f90b")
+FetchContent_Declare(lodepng
+  GIT_REPOSITORY https://github.com/lvandeve/lodepng.git
+  GIT_TAG ${MUJOCO_DEP_VERSION_lodepng}
+)
+FetchContent_GetProperties(lodepng)
+if(NOT lodepng_POPULATED)
+  FetchContent_Populate(lodepng)
+  add_library(lodepng STATIC ${lodepng_SOURCE_DIR}/lodepng.cpp)
+  set_target_properties(lodepng PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  target_include_directories(lodepng PUBLIC $<BUILD_INTERFACE:${lodepng_SOURCE_DIR}>)
+endif()
+install(TARGETS lodepng ARCHIVE DESTINATION opt/${PROJECT_NAME}/lib)
+install(FILES ${lodepng_SOURCE_DIR}/lodepng.h DESTINATION opt/${PROJECT_NAME}/include)
+
+# Setup the simulate library for mujoco_ros2_control
+find_package(glfw3 REQUIRED)
+
+set(_SIM_DIR "${MUJOCO_ROOT_DIR}/simulate")
+if(NOT EXISTS "${_SIM_DIR}/simulate.h")
+  set(_SIM_DIR "${MUJOCO_ROOT_DIR}/include/simulate")
+endif()
+
+add_library(mujoco_simulate STATIC
+  ${_SIM_DIR}/platform_ui_adapter.cc
+  ${_SIM_DIR}/glfw_adapter.cc
+  ${_SIM_DIR}/glfw_dispatch.cc
+  ${_SIM_DIR}/simulate.cc
+)
+set_target_properties(mujoco_simulate PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(mujoco_simulate PUBLIC
+  $<BUILD_INTERFACE:${_SIM_DIR}>
+  $<BUILD_INTERFACE:${MUJOCO_ROOT_DIR}/include>
+)
+target_link_libraries(mujoco_simulate PUBLIC mujoco glfw PRIVATE lodepng)
+target_compile_options(mujoco_simulate PRIVATE
+  -Wno-missing-field-initializers -Wno-unused-parameter -Wno-sign-compare -Wno-psabi
+  -Wno-shadow -Wno-float-equal
+)
+install(TARGETS mujoco_simulate ARCHIVE DESTINATION opt/${PROJECT_NAME}/lib)
+install(DIRECTORY ${_SIM_DIR}/ DESTINATION opt/${PROJECT_NAME}/include/simulate
+  FILES_MATCHING PATTERN "*.h"
 )
 
 # Export includes and library path
