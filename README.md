@@ -1,3 +1,26 @@
+## mujoco_vendor (jazzy) - 0.1.2-1
+
+The packages in the `mujoco_vendor` repository were released into the `jazzy` distro by running `/home/saikishor/venv/bloom/bin/bloom-release --rosdistro jazzy --track jazzy mujoco_vendor -y` on `Thu, 05 Nov 2026 09:30:30 -0000`
+
+The `mujoco_vendor` package was released.
+
+Version of package(s) in repository `mujoco_vendor`:
+
+- upstream repository: https://github.com/pal-robotics/mujoco_vendor.git
+- release repository: https://github.com/ros2-gbp/mujoco_vendor-release.git
+- rosdistro version: `0.1.0-1`
+- old version: `0.1.0-1`
+- new version: `0.1.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.4`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## mujoco_vendor (lyrical) - 0.1.2-1
 
 The packages in the `mujoco_vendor` repository were released into the `lyrical` distro by running `/home/saikishor/venv/bloom/bin/bloom-release --rosdistro lyrical --track lyrical mujoco_vendor -y` on `Thu, 05 Nov 2026 09:27:49 -0000`
